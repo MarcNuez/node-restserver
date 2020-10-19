@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 
 
 
-app.get('/', function (req, res) {
+app.get('/usuarios', function (req, res) {
     res.json('get usuarios')
 })
-app.post('/', function (req, res) {
+app.post('/usuarios', function (req, res) {
 
     let body = req.body;
 
@@ -33,7 +33,7 @@ app.post('/', function (req, res) {
 
    
 })
-app.put('/:id', function (req, res) {
+app.put('/usuarios/:id', function (req, res) {
 
     let id = req.params.id;
 
@@ -41,7 +41,7 @@ app.put('/:id', function (req, res) {
         id
     })
 })
-app.delete('/', function (req, res) {
+app.delete('/usuarios', function (req, res) {
     res.json('delete usuario')
 })
 
