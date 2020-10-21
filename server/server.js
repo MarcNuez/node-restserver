@@ -13,8 +13,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
+//importamos las rutas
 
-app.use(require('./routes/usuario'))
+app.use(require('./routes/index'));
+
 
 
 mongoose.connect(process.env.URLDB,

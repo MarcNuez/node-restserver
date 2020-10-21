@@ -7,11 +7,17 @@ const app = express();
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
+const { verificaToken,verificaAdmin_Role } = require('../middlewares/autenticacion')
 
 
 
 
-app.get('/usuarios', function (req, res) {
+
+app.get('/usuarios', verificaToken, (req, res) => {
+
+
+    
+
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -19,31 +25,31 @@ app.get('/usuarios', function (req, res) {
     let limite = req.query.limite || 5;
     limite = Number(limite);
 
-    Usuario.find({},'nombre email')
-                .skip(desde)
-                .limit(limite)
-                .exec((err,usuarios) => {
+    Usuario.find({}, 'nombre email')
+        .skip(desde)
+        .limit(limite)
+        .exec((err, usuarios) => {
 
 
-                    if (err) {
-                        res.status(400).json({
-                            ok: false,
-                            err
-                        });
-                    }
+            if (err) {
+                res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
 
-                    Usuario.count({},(err,conteo) => {
-                        res.json({
-                            ok:true,
-                            usuarios,
-                            cuantos:conteo
-                        })
-                    })
-
-
-                   
-
+            Usuario.count({}, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    usuarios,
+                    cuantos: conteo
                 })
+            })
+
+
+
+
+        })
 
 
 
@@ -51,7 +57,7 @@ app.get('/usuarios', function (req, res) {
 })
 
 
-app.post('/usuarios', function (req, res) {
+app.post('/usuarios',[verificaToken,verificaAdmin_Role], function (req, res) {
 
     let body = req.body;
 
@@ -88,10 +94,10 @@ app.post('/usuarios', function (req, res) {
 
 
 })
-app.put('/usuarios/:id', function (req, res) {
+app.put('/usuarios/:id', [verificaToken,verificaAdmin_Role], function (req, res) {
 
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre','email','img','role','estado']);
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
 
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
@@ -110,17 +116,17 @@ app.put('/usuarios/:id', function (req, res) {
     })
 
 })
-app.delete('/usuarios/:id', function (req, res) {
+app.delete('/usuarios/:id', [verificaToken,verificaAdmin_Role], function (req, res) {
 
     let id = req.params.id;
 
     let cambiaEstado = {
-        estado:false
+        estado: false
     }
 
 
 
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true}, (err, usuarioBorrado) => {
+    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
 
         if (err) {
             res.status(400).json({
