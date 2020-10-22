@@ -13,7 +13,7 @@ const { verificaToken,verificaAdmin_Role } = require('../middlewares/autenticaci
 
 
 
-app.get('/usuarios', verificaToken, (req, res) => {
+app.get('/usuarios',  (req, res) => {
 
 
     
